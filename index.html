@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Hvorfor webpack?</title>
+
+    <meta name="author" content="Brynjar Rongved">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="solarized-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/solarized.css" id="theme">
+
+    <link rel="stylesheet" href="css/custom.css">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/railscasts.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+
+    <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+</head>
+
+<body>
+
+    <div class="reveal">
+
+        <!-- Any section element inside of this container is displayed as a slide -->
+        <div class="slides">
+            <!-- Slide 1 -->
+            <section>
+                <h1>Hvorfor webpack?</h1>
+            </section>
+
+            <!--Slide 2 -->
+            <section>
+                <h3>Webpack</h3>
+                <ul>
+                    <li>Håndterer statiske assets i nettleseren:</li>
+                </ul>
+                <img style="border:0; box-shadow: none; padding-top: 10px" data-src="webpack-bundler.png" />
+            </section>
+            <section>
+                <section>
+                <h3>Importer hva som helst</h3>
+                <p><a class="highlight-blue">main.js:</a></p>
+                <pre>
+                    <code>
+require('style.scss');
+let Profile = require('./profile.js');
+
+document.write('Heisann. Tidspunkt: ' + require('./displayTime.js'));  
+                    </code>
+                </pre>
+                </section>
+                <section>
+                    <p><a class="highlight-blue">webpack.config.js:</a></p>
+                    <pre>
+                        <code style="font-size: 18px;">
+module.exports = {
+  entry: './main.js',
+  output: {
+    filename: 'bundle.js'       
+  },
+  module: {
+    loaders: [
+      {test: /\.js$/, loader: "6to5"}, // transpiles es6
+      {test: /\.scss$/, loader: "style!css!sass"},
+      {test: /\.png$/, loader: "url-loader?limit=100000"}
+    ]
+  }
+};
+                        </code>
+                    </pre>
+                </section>
+            </section>
+
+            <section>
+                <h3>Optimaliserte single page apps</h3>
+                <ul>
+                    <li>SPAs byr på nye utfordringer</li>
+                    <li>Store filstørrelser vs flere requests</li>
+                        <ul>
+                            <li>Må gjøre en avveining</li>
+                        </ul>
+                </ul>
+
+            </section>
+
+        </div>
+
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [{
+            src: 'lib/js/classList.js',
+            condition: function() {
+                return !document.body.classList;
+            }
+        }, {
+            src: 'plugin/markdown/marked.js',
+            condition: function() {
+                return !!document.querySelector('[data-markdown]');
+            }
+        }, {
+            src: 'plugin/markdown/markdown.js',
+            condition: function() {
+                return !!document.querySelector('[data-markdown]');
+            }
+        },  { 
+            src: 'plugin/highlight/highlight.js',
+            sync: true, 
+            condition: function() {
+                return !!document.querySelector('pre code'); 
+            }, 
+            callback: function() {
+                hljs.initHighlightingOnLoad(); 
+            } 
+        }, {
+            src: 'plugin/zoom-js/zoom.js',
+            async: true
+        }, {
+            src: 'plugin/notes/notes.js',
+            async: true
+        }]
+    });
+    </script>
+
+</body>
+
+</html>
