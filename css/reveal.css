@@ -1107,3 +1107,44 @@ body {
 
 .zoomed .reveal .roll span:after {
   visibility: hidden; }
+
+.Loading {
+  margin: 50px auto;
+  width: 50px;
+  -webkit-animation: Loading-anim 0.4s infinite;
+  -moz-animation: Loading-anim 0.4s infinite;
+  animation: Loading-anim 0.4s infinite;
+  -webkit-animation-direction: alternate;
+  -moz-animation-direction: alternate;
+  animation-direction: alternate;
+}
+@-webkit-keyframes Loading-anim {
+  from {
+    color: #6ca398;
+    transform: rotateZ(-10deg);
+  }
+  to {
+    color: #333333;
+    transform: rotateZ(10deg);
+  }
+}
+@-moz-keyframes Loading-anim {
+  from {
+    color: #6ca398;
+    transform: rotateZ(-10deg);
+  }
+  to {
+    color: #333333;
+    transform: rotateZ(10deg);
+  }
+}
+@keyframes Loading-anim {
+  from {
+    color: #6ca398;
+    transform: rotateZ(-10deg);
+  }
+  to {
+    color: #333333;
+    transform: rotateZ(10deg);
+  }
+}

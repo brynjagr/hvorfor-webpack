@@ -49,21 +49,66 @@
             <!--Slide 2 -->
             <section>
                 <h3>Webpack</h3>
-                <ul>
-                    <li>Håndterer statiske assets i nettleseren:</li>
-                </ul>
-                <img style="border:0; box-shadow: none; padding-top: 10px" data-src="webpack-bundler.png" />
+                <img style="border:0; box-shadow: none; padding-top: 10px" data-src="webpack-bundler.svg" />
             </section>
+            <section> 
+                <section>
+                    <h3>Bundler moduler for nettleseren</h3>
+                    <div style="width= 100%;">
+                        <div style="width:30%; float:left">
+                            <img style="border:0; box-shadow: none; padding-top: 10px" data-src="dependency.svg" />
+                        </div>
+                        <div style="width:10%; margin-top: 100px; float:left">
+                            <img style="border:0; box-shadow: none; padding-top: 10px" data-src="rightarrow.svg" />
+                        </div>
+                        <div style="width:50%; float:left">
+                            <pre style="margin-top:80px">
+                                <code class="html" style="font-size: 15px;">
+    &lt;script src="feed-bundle.js"&gt; &lt;/script&gt;
+    &lt;script src="profile-bundle.js"&gt; &lt;/script&gt;
+                                </code>
+                            </pre>
+                        </div>
+                    </div>
+
+                </section>
+                <section>
+                    <h3>Optimalserte bundles</h3>
+                    CommonsChunkPlugin:
+
+                    <div style="width= 100%;">
+                        <div style="width:30%; float:left">
+                            <img style="border:0; box-shadow: none; padding-top: 10px" data-src="optimized-dependency.svg" />
+                        </div>
+                        <div style="width:10%; margin-top: 100px; float:left">
+                            <img style="border:0; box-shadow: none; padding-top: 10px" data-src="rightarrow.svg" />
+                        </div>
+                        <div style="width:50%; float:left">
+                            <pre style="margin-top:80px">
+                                <code class="html" style="font-size: 15px;">
+    &lt;script src="feed-bundle.js"&gt; &lt;/script&gt;
+    &lt;script src="profile-bundle.js"&gt; &lt;/script&gt;
+    &lt;script src="common.js"&gt; &lt;/script&gt;
+                                </code>
+                            </pre>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
             <section>
                 <section>
                 <h3>Importer hva som helst</h3>
                 <p><a class="highlight-blue">main.js:</a></p>
                 <pre>
                     <code>
-require('style.scss');
-let Profile = require('./profile.js');
+require('./style.scss');
 
-document.write('Heisann. Tidspunkt: ' + require('./displayTime.js'));  
+let imgElement = document.createElement('img');
+
+imgElement.src = require('./image.png');
+
+document.body.appendChild(imgElement); 
                     </code>
                 </pre>
                 </section>
@@ -80,7 +125,7 @@ module.exports = {
     loaders: [
       {test: /\.js$/, loader: "6to5"}, // transpiles es6
       {test: /\.scss$/, loader: "style!css!sass"},
-      {test: /\.png$/, loader: "url-loader?limit=100000"}
+      {test: /\.png$/, loader: "url-loader?limit=10000"}
     ]
   }
 };
@@ -90,15 +135,70 @@ module.exports = {
             </section>
 
             <section>
-                <h3>Optimaliserte single page apps</h3>
-                <ul>
-                    <li>SPAs byr på nye utfordringer</li>
-                    <li>Store filstørrelser vs flere requests</li>
-                        <ul>
-                            <li>Må gjøre en avveining</li>
-                        </ul>
-                </ul>
+                <section>
+                    <h3>Single page apps</h3>
+                    <ul>
+                        <li>God brukeropplevelse, men byr på utfordringer:</li>
+                        <p class="Loading" style="">Loading</p>
 
+                        <li>Front-end router for navigasjon</li>
+                        <ul>
+                            <li>Henter kode avhengig av hvor du befinner deg</li>
+                        </ul>  
+
+                    </ul>
+
+        
+
+                </section>
+                <section>
+                <h3>Asynkron lasting av moduler</h3>
+                    <pre>
+                        <code style="font-size: 18px;">
+window.onpopstate = function() {
+    showLoadingIndicator();
+    if (window.location.pathname === '/profile') {
+        require.ensure([], function() {
+            hideLoadingIndicator();
+            require('./pages/profile').show();
+        });
+    } else if (window.lcation.pathname === '/feed') {
+        require.ensure([], function() {
+            hideLoadingIndicator();
+            require('./pages/feed').show();
+        });
+    }
+}
+                        </code>
+                    </pre>
+                </section>
+            </section>
+            <section>
+                <h3>Annet snacks</h3>
+                <ul>
+                    <li>Hot module replacement</li>
+                    <li>Transformasjoner nødvendig for prod:</li>
+                    <ul>
+                        <li>Minifisering</li>
+                        <li>Linting</li>
+                        <li>Zipping</li>
+                        <li>++</li>
+                    </ul>
+                </ul>
+            </section>
+            <section>
+                 <div style="width= 100%;">
+                    <div style="width:50%; float:left">
+                        <img style="border:0; box-shadow: none; padding-top: 10px" data-src="webpack-logo.png" />
+                    </div>
+                    <div style="width:50%; float:left">
+                        <img style="border:0; box-shadow: none; padding-top: 10px" data-src="thumbs-up.png" />
+                    </div>
+                </div>
+                <ul>
+                    <li>https://www.youtube.com/watch?v=VkTCL6Nqm6Y</li>
+                    <li>https://github.com/petehunt/webpack-howto</li>
+                </ul>
             </section>
 
         </div>
