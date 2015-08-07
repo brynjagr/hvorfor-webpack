@@ -50,6 +50,14 @@
             <section>
                 <h3>Webpack</h3>
                 <img style="border:0; box-shadow: none; padding-top: 10px" data-src="webpack-bundler.svg" />
+                <aside class="notes">
+                    <ul style="font-size: 0.8em;">
+
+                        <li>Hva er webpack?</li>
+                        <li>En modul-bundler som tar statiske assets ... og alt annet vi måtte ønske å ha i front-end appen vår ... og som så transformer disse til én enkelt bundle. </li>
+                        <li>Bygges av webpack ut ifra en avhengighetsgraf. Som oppstår når man importerer alle disse ressursene ved hjelp av et modulsystem</li>
+                    </ul>
+                </aside>
             </section>
             <section> 
                 <section>
@@ -62,19 +70,31 @@
                             <img style="border:0; box-shadow: none; padding-top: 10px" data-src="rightarrow.svg" />
                         </div>
                         <div style="width:50%; float:left">
-                            <pre style="margin-top:80px">
+                            <pre style="margin-top:50px">
                                 <code class="html" style="font-size: 15px;">
+    feed.html:
     &lt;script src="feed-bundle.js"&gt; &lt;/script&gt;
+
+    profile.html:
     &lt;script src="profile-bundle.js"&gt; &lt;/script&gt;
                                 </code>
                             </pre>
                         </div>
                     </div>
+                    <aside class="notes">
+                        <ul style="font-size: 0.8em;">
+
+                            <li>Eksempel på bundlingen. Avhengighetsgraf for en woop-lignende app</li>
+                            <li>Feed og brukerprofil er separate sider eller entry points.</li>
+                            <li>Uten konfig: webpack genererer flate JavaScript-filer ut av grafen. sånn at denne modulariserte kode som er grei å jobbe med -> kan tolkes av en nettleser.</li>
+                            <li>Vel og bra dette. Men webpack er kraftig, kan optimalisere</li>
+                        </ul>
+                    </aside>
 
                 </section>
                 <section>
                     <h3>Optimalserte bundles</h3>
-                    CommonsChunkPlugin:
+                    webpack.optimize.CommonsChunkPlugin:
 
                     <div style="width= 100%;">
                         <div style="width:30%; float:left">
@@ -84,33 +104,55 @@
                             <img style="border:0; box-shadow: none; padding-top: 10px" data-src="rightarrow.svg" />
                         </div>
                         <div style="width:50%; float:left">
-                            <pre style="margin-top:80px">
+                            <pre style="margin-top:30px">
                                 <code class="html" style="font-size: 15px;">
+    feed.html:
     &lt;script src="feed-bundle.js"&gt; &lt;/script&gt;
+    &lt;script src="common.js"&gt; &lt;/script&gt;
+
+    profile.html:
     &lt;script src="profile-bundle.js"&gt; &lt;/script&gt;
     &lt;script src="common.js"&gt; &lt;/script&gt;
                                 </code>
                             </pre>
                         </div>
                     </div>
+                    <aside class="notes">
+                        <ul style="font-size: 0.8em;">
+                            <li>sier til webpack at vi vil slå sammen kode som deles av flere sider i appen. så vi webpack se ut ifra grafen... </li>
+                            <li>Webpack vil dermed kunne bunte disse sammen</li>
+                            <li>Fellesbundelen vil caches.</li>
+                            <li>Hvis sammenslåingen gjøres er det fordi optimizern mener flere requests er bedre enn én stor fil</li>
+                            <li>Gylden middelvei</li>
+                            <li>Er ikke sikkert felleskode blir separert ut</li>
+                        </ul>
+                    </aside>
                 </section>
             </section>
 
             <section>
                 <section>
-                <h3>Importer hva som helst</h3>
-                <p><a class="highlight-blue">main.js:</a></p>
-                <pre>
-                    <code>
+                    <h3>Importer hva som helst</h3>
+                    <p><a class="highlight-blue">main.js:</a></p>
+                    <pre>
+                        <code>
 require('./style.scss');
 
-let imgElement = document.createElement('img');
+var imgElement = document.createElement('img');
 
 imgElement.src = require('./image.png');
 
 document.body.appendChild(imgElement); 
-                    </code>
-                </pre>
+                        </code>
+                    </pre>
+                    <aside class="notes">
+                        <ul style="font-size: 0.8em;">
+                            <li>Avhengighetsgrafen til webpack er ikke forbeholdt javascript.</li>
+                            <li>Ser kanskje litt rart ut men importerer sass</li>
+                            <li>Tilsvarende mulig å importere png bildefil</li>
+                            <li>For at webpack skal forstå spesiell bruk av require... bruker noe som i webpack verden kaller for loaders...</li>
+                        </ul>
+                    </aside>
                 </section>
                 <section>
                     <p><a class="highlight-blue">webpack.config.js:</a></p>
@@ -123,7 +165,6 @@ module.exports = {
   },
   module: {
     loaders: [
-      {test: /\.js$/, loader: "6to5"}, // transpiles es6
       {test: /\.scss$/, loader: "style!css!sass"},
       {test: /\.png$/, loader: "url-loader?limit=10000"}
     ]
@@ -131,6 +172,14 @@ module.exports = {
 };
                         </code>
                     </pre>
+                    <aside class="notes">
+                        <ul style="font-size: 0.8em;">
+                            <li>Hvordan forskjellige filtyper håndteres...</li>
+                            <li>Her ser dere konfigen for koden på forrige slide.</li>
+                            <li>Og har to loaders. første lar oss importere sass andre png-bilder</li>
+                            <li>for bilder under 10kb inlines som base64 string, hvis ikke brukes en referanse</li>
+                        </ul>
+                    </aside>
                 </section>
             </section>
 
@@ -141,20 +190,26 @@ module.exports = {
                         <li>God brukeropplevelse, men byr på utfordringer:</li>
                         <p class="Loading" style="">Loading</p>
 
-                        <li>Front-end router for navigasjon</li>
-                        <ul>
-                            <li>Henter kode avhengig av hvor du befinner deg</li>
-                        </ul>  
+                        <li>Bør kun laste ned det vi trenger</li>
+                        <li>Hvordan? "Split points" i front-end ruteren!</li>
+                  
 
                     </ul>
 
-        
-
+                    <aside class="notes">
+                        <ul style="font-size: 0.8em;">
+                            <li>Webpack kan også gjøre en jobb for oss når det kommer til single page apps</li>
+                            <li>Det vi så istad var jo en multi page app, hvor vi hadde flere entry points. Her er det snakk om en app med et enkelt entry point hvor ulike deler av appen lastes ned asynkront...</li>
+                            <li>Så kjennetegnet for mange Single page apps er at de har en ganske høy initial load, hvor en eller flere store filer ...</li>
+                            <li>En løsning på det her er å isteden for å hente alle assets i dét siden laster...</li>
+                        </ul>
+                    </aside>
                 </section>
                 <section>
                 <h3>Asynkron lasting av moduler</h3>
                     <pre>
                         <code style="font-size: 18px;">
+// Front-end router
 window.onpopstate = function() {
     showLoadingIndicator();
     if (window.location.pathname === '/profile') {
@@ -171,6 +226,17 @@ window.onpopstate = function() {
 }
                         </code>
                     </pre>
+                    <aside class="notes">
+                        <ul style="font-size: 0.8em;">
+                            <li>Til det her bruker webpack require.ensure</li>
+                            <li>En asynkron variant av den vanlige require-funksjonen i CommonJS, og brukes typisk i en front-end ruter..</li>
+                            <li>Laste ned forskjellige deler av appen avhengig av URL</li>
+                            <li>I den øverste if-setningen sier vi til appen vår at når vi får inn profil-URLen så skal du prøve å hente inn profil-bundelen...</li>
+                            <li>Under overflaten – legger inn kode som gjør asynkrone HTTP requests</li>
+                            <li>Slipper å forholde seg til dette</li>
+                            <li>Webpack velger om det skal legge i egne filer eller pakkes sammen med eksisterende bundles.</li>
+                        </ul>
+                    </aside>
                 </section>
             </section>
             <section>
@@ -180,11 +246,18 @@ window.onpopstate = function() {
                     <li>Transformasjoner nødvendig for prod:</li>
                     <ul>
                         <li>Minifisering</li>
+                        <li>Komprimering</li>
                         <li>Linting</li>
-                        <li>Zipping</li>
                         <li>++</li>
                     </ul>
                 </ul>
+                <aside class="notes">
+                    <ul style="font-size: 0.8em;">
+                        <li>Avlutningsvis nevn at webpack kommer med en del andre bra features</li>
+                        <li>Bla hot module replacement</li>
+                        <li>En annen ting som er bra er at du kanskje slipper et eget byggesystem</li>
+                    </ul>
+                </aside>
             </section>
             <section>
                  <div style="width= 100%;">
@@ -199,6 +272,14 @@ window.onpopstate = function() {
                     <li>https://www.youtube.com/watch?v=VkTCL6Nqm6Y</li>
                     <li>https://github.com/petehunt/webpack-howto</li>
                 </ul>
+                <aside class="notes">
+                    <ul style="font-size: 0.8em;">
+                        <li>Det jeg hadde</li>
+                        <li>Inspirert av foredrag av Pete Hunt</li>
+                        <li>Anbefales</li>
+                        <li>Nevn pragmatisk guide</li>
+                    </ul>
+                </aside>
             </section>
 
         </div>
